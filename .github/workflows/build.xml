@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Unzip and build
+        run: |
+          mkdir work
+          unzip -o "$(ls *.zip | head -1)" -d work
+          cd work
+          mvn -B package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CaneIslands
+          path: work/target/CaneIslands.jar
